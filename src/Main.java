@@ -1,13 +1,51 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-void main() {
-  //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-  // to see how IntelliJ IDEA suggests fixing it.
-  IO.println(String.format("Hello and welcome!"));
+import exceptions.CepInexistenteException;
+import exceptions.CepInvalidoException;
+import exceptions.RequisicaoMalSucedidaException;
 
-  for (int i = 1; i <= 5; i++) {
-    //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-    // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-    IO.println("i = " + i);
-  }
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+       CepRequestHandler requestHandler = new CepRequestHandler();
+        Scanner s = new Scanner(System.in);
+        String userInput = "";
+
+        while (!userInput.equals("0")){
+            System.out.println("\nDigite o CEP que deseja buscar ou 0 para sair: ");
+            userInput =s.nextLine();
+
+            if(!userInput.equals("0")){
+                try {
+                    System.out.println(" ... Buscando informações... ");
+                    HttpResponse<String> response = requestHandler.getCEP(userInput);
+
+                    System.out.printf("Sucesso na requisição.\n" +
+                            "---------------------\n" +
+                            " Status:%s\n" +
+                            "---------------------" +
+                                    "%s",
+                            response.statusCode(),response.body());
+
+
+                }catch(CepInvalidoException e) {
+                    System.out.println(e.getMessage());
+                }catch (RequisicaoMalSucedidaException e){
+                    System.out.println(e.getMessage());
+                }catch(CepInexistenteException e){
+                    System.out.println(e.getMessage());
+                }
+            }else{
+                System.out.println("Encerrando aplicação...");
+                break;
+            }
+
+            }
+        }
+
+
 }
