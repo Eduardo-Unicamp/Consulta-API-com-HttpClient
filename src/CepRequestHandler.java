@@ -46,6 +46,16 @@ public class CepRequestHandler {
         }
     }
 
+    //GET only the Address object information
+    public Address getAddress(String cep){
+        //gets "Json style" string
+        HttpResponse<String> response = getCEP(cep);
+
+        //parses to Address and returns an Address object
+        return Address.parseToAddress(response.body());
+
+    }
+
 
 
 
